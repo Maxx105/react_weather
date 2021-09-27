@@ -61,10 +61,23 @@ function Search() {
         document.getElementById('error').prepend(newSpan);
     }
 
+    function clearSearchHistory(e) {
+        localStorage.clear();
+        setSearchHistory([]);
+    }
+
+    function deleteSearchItem(e) {
+        let splicedArray = searchHistory;
+        splicedArray.splice(e.target.id, 1);
+        console.log(splicedArray);
+        localStorage.setItem('search', JSON.stringify(splicedArray));
+        setSearchHistory(JSON.parse(localStorage.getItem('search')));
+    }
+
     return (
         <div className="searchArea">
             <h1>Search for a City:</h1>
-            <form>
+            <form id="search-form">
                 <div className="form-check">
                     <input onClick={e => onLocationTypeChange(e)} className="form-check-input" type="radio" name="flexRadioDefault" id="zip" />
                     <label className="form-check-label" htmlFor="zip">
@@ -84,11 +97,19 @@ function Search() {
                 <p id="error"></p>
             </form>
             <br/>
-            <div>
-                {searchHistory.map((location) => (
-                    <li className="list-group-item" id="searches" key={location}>{location}</li>
+            <ul className="list-group">
+                {searchHistory.map((location, index) => (
+                    <li className="list-group-item d-flex justify-content-between align-items-center" id="searches" key={index}>
+                        {location}
+                        <span onClick = {deleteSearchItem} className="badge bg-dark rounded-pill" id={index}>X</span>
+                    </li>
                 ))}
-            </div>
+            </ul>
+            {searchHistory.length != 0 ? (
+                <div className="d-grid gap-2">
+                    <button onClick={clearSearchHistory} className="btn btn-danger" type="button" id="delete-history">Clear History</button>
+                </div>
+            ) : null}
         </div>
     );
 }

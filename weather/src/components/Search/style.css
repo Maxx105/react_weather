@@ -2,6 +2,18 @@
     color: red;
 }
 
+#delete-history {
+    margin-top: 10px;
+}
+
+#searches:hover {
+    background-color: lightgrey;
+}
+
+#searches:active {
+    background-color: grey;
+}
+
 .searchArea {
     background-color: rgb(229, 226, 226);
     opacity: 0.85;
