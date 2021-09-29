@@ -1,11 +1,17 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useContext} from "react";
 import API from "../../utils/API";
+import { WeatherContext } from "../../Context/WeatherContext";
 import "./style.css";
 
 function Search() {
-    const  [locationType, setLocationType] = useState("");
-    const  [location, setLocation] = useState("");
+    const [locationType, setLocationType] = useState("");
+    const [location, setLocation] = useState("");
     const [searchHistory, setSearchHistory] = useState([]);
+    const [weatherData, setWeatherData] = useState("");
+
+    const weatherContext = useContext(WeatherContext);
+
+    let APIKey = "3e198aed3ed933b951a2da906f5d01db";
 
     useEffect(() => {
         setInitialLocalStorageArray();
@@ -20,13 +26,19 @@ function Search() {
     }
 
     function loadWeather() {
-        setErrorMessage();
-        API.getCurrentWeather(locationType, location)
+        setErrorMessage()
+        API.getCurrentWeather(locationType, location, weatherContext.APIKey)
             .then(res => {
                 console.log(res);
+                createSearchHistory(`https://api.openweathermap.org/data/2.5/weather?${locationType}=${location}&appid=${weatherContext.APIKey}`);
                 document.getElementById('location').value = "";
                 setLocation("");
-            });
+                weatherContext.setWeatherData(res);
+                weatherContext.setIsLoaded(true);
+            })
+            .catch(err => {
+                console.log(err)
+            })
     }
 
     function setInitialLocalStorageArray() {
@@ -46,11 +58,25 @@ function Search() {
             createErrorMessage()
         } else {
             document.getElementById('error').innerText = "";
-            let searchArray = searchHistory;
-            searchArray.push(document.getElementById('location').value);
-            localStorage.setItem('search', JSON.stringify(searchArray));
-            setSearchHistory(JSON.parse(localStorage.getItem('search')));
         }
+    }
+
+    function createSearchHistory(APICallURL) {
+        document.getElementById('error').innerText = "";
+        let searchArray = searchHistory;
+        searchArray.push({location: document.getElementById('location').value, APICall: APICallURL});
+        localStorage.setItem('currentCity', document.getElementById('location').value);
+        localStorage.setItem('search', JSON.stringify(searchArray));
+        setLocalStorageLocationType();
+        setSearchHistory(JSON.parse(localStorage.getItem('search')));
+        weatherContext.setCurrentCity(localStorage.getItem('currentCity'));
+        weatherContext.setCurrentLocationType(localStorage.getItem('currentLocationType'));
+    }
+
+    function setLocalStorageLocationType() {
+        if (document.getElementById('zip').checked === true) {
+            localStorage.setItem('currentLocationType', 'zip');
+        } else localStorage.setItem('currentLocationType', 'q');
     }
 
     function createErrorMessage() {
@@ -69,13 +95,24 @@ function Search() {
     function deleteSearchItem(e) {
         let splicedArray = searchHistory;
         splicedArray.splice(e.target.id, 1);
-        console.log(splicedArray);
         localStorage.setItem('search', JSON.stringify(splicedArray));
         setSearchHistory(JSON.parse(localStorage.getItem('search')));
     }
 
+    function searchHistoryAPICall(url) {
+        API.getCurrentWeatherWithURL(url)
+            .then(res => {
+                console.log(res);
+                weatherContext.setWeatherData(res);
+                weatherContext.setIsLoaded(true);
+            })
+            .catch(err => {
+                console.log(err)
+            })
+    }
+
     return (
-        <div className="searchArea">
+        <div className="searchArea shadow">
             <h1>Search for a City:</h1>
             <form id="search-form">
                 <div className="form-check">
@@ -99,8 +136,8 @@ function Search() {
             <br/>
             <ul className="list-group">
                 {searchHistory.map((location, index) => (
-                    <li className="list-group-item d-flex justify-content-between align-items-center" id="searches" key={index}>
-                        {location}
+                    <li onClick = {() => searchHistoryAPICall(location.APICall)} className="list-group-item d-flex justify-content-between align-items-center" id="searches" key={index}>
+                        {location.location}
                         <span onClick = {deleteSearchItem} className="badge bg-dark rounded-pill" id={index}>X</span>
                     </li>
                 ))}
