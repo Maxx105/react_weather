@@ -144,7 +144,7 @@ function Search() {
                 {searchHistory.map((location, index) => (
                     <li onClick = {() => getWeather(location.locationType, location.location, weatherContext.APIKey)} className="list-group-item d-flex justify-content-between align-items-center" id="searches" key={index}>
                         {location.location}
-                        <span onClick = {deleteSearchItem} className="badge bg-dark rounded-pill" id={index}>X</span>
+                        <button onClick = {deleteSearchItem} className="btn btn-dark rounded-pill" id={index}>X</button>
                     </li>
                 ))}
             </ul>

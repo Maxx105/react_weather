@@ -26,3 +26,11 @@
     box-shadow: 5px 5px 5px;
     font-family: 'Signika Negative', sans-serif;
 }
+
+.btn-dark:hover {
+    background-color: grey !important;
+}
+
+.btn-dark:active {
+    background-color: black !important;
+}
