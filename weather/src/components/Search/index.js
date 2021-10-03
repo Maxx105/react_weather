@@ -134,10 +134,10 @@ function Search() {
                     <input onChange={e => onLocationChange(e)} type="text" className="form-control" placeholder="Enter City Here" id="location"/>
                     <button onClick = {loadWeather} className="btn btn-primary" type="button">Search</button>
                 </div>
+                <p id="error"></p>
                 <div className="d-grid gap-2">
                     <button onClick={getWeatherForMyLocation} className="btn btn-dark">Search My Location</button>
                 </div>
-                <p id="error"></p>
             </form>
             <br/>
             <ul className="list-group">
