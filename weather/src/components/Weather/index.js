@@ -80,7 +80,7 @@ function Weather() {
                                     <div><p className = "card-text">Temperature: {convertToFahrenheit(hour.temp)} °F</p></div>
                                     <div><p className = "card-text">Feels Like: {convertToFahrenheit(hour.feels_like)} °F</p></div>
                                     <div><p className = "card-text">Humidity: {hour.humidity}%</p></div>
-                                    <div><p className = "card-text">Chance of Precipitation: {hour.pop*100}%</p></div>
+                                    <div><p className = "card-text">Chance of Precipitation: {(hour.pop*100).toFixed(0)}%</p></div>
                                 </div>
                             </div>
                         ))}
