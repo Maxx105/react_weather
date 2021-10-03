@@ -1,6 +1,5 @@
 import React from 'react';
 import './App.css';
-import bg from "./Assets/bg.jpg";
 import Header from "./components/Header";
 import Search from "./components/Search";
 import Weather from "./components/Weather";

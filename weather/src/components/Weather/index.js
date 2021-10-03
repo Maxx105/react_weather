@@ -1,13 +1,9 @@
-import React, { useState, useContext, useEffect } from "react";
-import Search from "../Search";
+import React, { useContext } from "react";
 import { WeatherContext } from "../../Context/WeatherContext";
-import API from "../../utils/API";
 import "./style.css";
 
 function Weather() {
     const weatherContext = useContext(WeatherContext);
-    const [city, setCity] = useState('');
-    const [country, setCountry] = useState('');
 
     function getCurrentDate() {
         var date = new Date();

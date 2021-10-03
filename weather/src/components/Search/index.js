@@ -7,13 +7,8 @@ function Search() {
     const [locationType, setLocationType] = useState("");
     const [location, setLocation] = useState("");
     const [searchHistory, setSearchHistory] = useState([]);
-    const [lat, setLat] = useState('');
-    const [lon, setLon] = useState('');
-    // const [weatherData, setWeatherData] = useState("");
 
     const weatherContext = useContext(WeatherContext);
-
-    let APIKey = "3e198aed3ed933b951a2da906f5d01db";
 
     useEffect(() => {
         setInitialLocalStorageArray();
@@ -36,7 +31,6 @@ function Search() {
                 weatherContext.setIsLoaded(true);
                 API.getOneCallData(res.coord.lat, res.coord.lon, weatherContext.APIKey)
                     .then(res => {
-                        console.log(res)
                         weatherContext.setUvi(res.current.uvi);
                         weatherContext.setForecastDailyWeatherData(res.daily);
                         weatherContext.setForecastHourlyWeatherData(res.hourly);
@@ -49,18 +43,6 @@ function Search() {
     }
 
     function loadWeather() {
-        setErrorMessage();
-    }
-
-    function setInitialLocalStorageArray() {
-        if (JSON.parse(localStorage.getItem('search')) === null) {
-            setSearchHistory([]);
-        } else {
-            setSearchHistory(JSON.parse(localStorage.getItem('search')));
-        };
-    }
-
-    function setErrorMessage() {
         if (document.getElementById('zip').checked === false && document.getElementById('q').checked === false) {
             document.getElementById('error').innerText = " Please select a location type";
             createErrorMessage()
@@ -72,6 +54,14 @@ function Search() {
             createSearchHistory(`https://api.openweathermap.org/data/2.5/weather?${locationType}=${location}&appid=${weatherContext.APIKey}`, document.getElementById('location').value, locationType);
             getWeather(locationType, location, weatherContext.APIKey);
         }
+    }
+
+    function setInitialLocalStorageArray() {
+        if (JSON.parse(localStorage.getItem('search')) === null) {
+            setSearchHistory([]);
+        } else {
+            setSearchHistory(JSON.parse(localStorage.getItem('search')));
+        };
     }
 
     function createSearchHistory(APICallURL, location, locationType) {
@@ -127,7 +117,6 @@ function Search() {
 
     return (
         <div className="searchArea">
-            {/* <h1>Search for a City:</h1> */}
             <form id="search-form">
                 <div className="form-check">
                     <input onClick={e => onLocationTypeChange(e)} className="form-check-input" type="radio" name="flexRadioDefault" id="zip" />
@@ -159,7 +148,7 @@ function Search() {
                     </li>
                 ))}
             </ul>
-            {searchHistory.length != 0 ? (
+            {searchHistory.length !== 0 ? (
                 <div className="d-grid gap-2">
                     <button onClick={clearSearchHistory} className="btn btn-danger" type="button" id="delete-history">Clear History</button>
                 </div>

@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState } from "react";
 
 export const WeatherContext = createContext();
 
@@ -11,7 +11,7 @@ export default ({ children }) => {
   const [currentLocationType, setCurrentLocationType] = useState('');
   const [isLoaded, setIsLoaded] = useState(false);
 
-  let APIKey = "3e198aed3ed933b951a2da906f5d01db";
+  let APIKey = process.env.REACT_APP_APIKey;
 
   return (
     <div>
