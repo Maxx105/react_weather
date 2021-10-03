@@ -11,7 +11,7 @@ export default {
     .then(res => res.data);
   },
   getOneCallData: function(lat, lon, APIKey) {
-    return axios.get(`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=hourly,minutely&appid=${APIKey}`)
+    return axios.get(`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=minutely&appid=${APIKey}`)
     .then(res => res.data);
   },
   getZipbyLocation: function (ip) {

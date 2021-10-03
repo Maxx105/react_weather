@@ -9,7 +9,7 @@ function App() {
   return (
     <div className="App">
       <Header/>
-      <div className="row container-fluid">
+      <div className="row">
         <div className="col-lg-4 col-md-12">
           <Search/>
         </div>

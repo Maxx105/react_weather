@@ -2,3 +2,7 @@
     background-image: url("./Assets/bg.jpg");
     background-repeat: 'no-repeat';
 }
+
+.App {
+    margin: 10px;
+}

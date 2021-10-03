@@ -51,6 +51,15 @@ function Weather() {
         return (new Date(dt*1000).getMonth() + 1) + "/" + (new Date(dt*1000).getDate()) + "/" + (new Date(dt*1000).getFullYear())
     }
 
+    function convertDTtoDay(dt) {
+        let days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        return days[new Date(dt*1000).getDay()];
+    }
+
+    function convertDTtoTime(dt) {
+        return new Date(dt*1000).toLocaleTimeString('en-US', { hour: 'numeric', hour12: true });
+    }
+
     return (
         <div>
             {weatherContext.isLoaded ? (
@@ -66,13 +75,31 @@ function Weather() {
                     <h4><strong>UV Index <i className="fas fa-sun"></i></strong><span id="uv-index" className={`badge rounded-pill bg-${setUVColor(weatherContext.uvi)}`}>{weatherContext.uvi}</span></h4>
                     <hr/>
                     <div className = "scrolling-wrapper">
-                        {weatherContext.forecastWeatherData.map((day, index) => (
+                        {weatherContext.forecastHourlyWeatherData.map((hour, index) => (
                             <div className = "card" key={index}>
                                 <div className = "card-body">
-                                    <div><h5 className = "card-text">{convertDTtoDate(day.dt)}</h5></div>
+                                    <div><h5 className = "card-text"><strong>{convertDTtoTime(hour.dt)}</strong></h5></div>
+                                    {/* <div><h6 className = "card-text">{convertDTtoDate(day.dt)}</h6></div> */}
+                                    <div><img className="card-img-top" id="icon" src={`https://openweathermap.org/img/wn/${hour.weather[0].icon}@2x.png`} alt = {hour.weather[0].description}></img></div>
+                                    <div><p className = "card-text">Temperature: {convertToFahrenheit(hour.temp)} °F</p></div>
+                                    <div><p className = "card-text">Feels Like: {convertToFahrenheit(hour.feels_like)} °F</p></div>
+                                    <div><p className = "card-text">Humidity: {hour.humidity}%</p></div>
+                                    <div><p className = "card-text">Chance of Precipitation: {hour.pop*100}%</p></div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                    <hr/>
+                    <div className = "scrolling-wrapper">
+                        {weatherContext.forecastDailyWeatherData.map((day, index) => (
+                            <div className = "card" key={index}>
+                                <div className = "card-body">
+                                    <div><h5 className = "card-text"><strong>{convertDTtoDay(day.dt)}</strong></h5></div>
+                                    <div><h6 className = "card-text">{convertDTtoDate(day.dt)}</h6></div>
                                     <div><img className="card-img-top" id="icon" src={`https://openweathermap.org/img/wn/${day.weather[0].icon}@2x.png`} alt = {day.weather[0].description}></img></div>
                                     <div><p className = "card-text">Temperature: {convertToFahrenheit(day.temp.day)} °F</p></div>
-                                    <div><p className = "card-text">Humidity: {day.humidity} %</p></div>
+                                    <div><p className = "card-text">Humidity: {day.humidity}%</p></div>
+                                    <div><p className = "card-text">Chance of Precipitation: {(day.pop*100).toFixed(0)}%</p></div>
                                 </div>
                             </div>
                         ))}

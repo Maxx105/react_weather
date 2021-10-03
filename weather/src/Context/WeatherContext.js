@@ -4,7 +4,8 @@ export const WeatherContext = createContext();
 
 export default ({ children }) => {
   const [weatherData, setWeatherData] = useState([]);
-  const [forecastWeatherData, setForecastWeatherData] = useState([]);
+  const [forecastDailyWeatherData, setForecastDailyWeatherData] = useState([]);
+  const [forecastHourlyWeatherData, setForecastHourlyWeatherData] = useState([]);
   const [uvi, setUvi] = useState('');
   const [currentCity, setCurrentCity] = useState('');
   const [currentLocationType, setCurrentLocationType] = useState('');
@@ -19,8 +20,10 @@ export default ({ children }) => {
             setWeatherData,
             uvi,
             setUvi,
-            forecastWeatherData,
-            setForecastWeatherData,
+            forecastDailyWeatherData,
+            setForecastDailyWeatherData,
+            forecastHourlyWeatherData,
+            setForecastHourlyWeatherData,
             currentCity, 
             setCurrentCity,
             currentLocationType, 
