@@ -7,7 +7,9 @@ function Search() {
     const [locationType, setLocationType] = useState("");
     const [location, setLocation] = useState("");
     const [searchHistory, setSearchHistory] = useState([]);
-    const [weatherData, setWeatherData] = useState("");
+    const [lat, setLat] = useState('');
+    const [lon, setLon] = useState('');
+    // const [weatherData, setWeatherData] = useState("");
 
     const weatherContext = useContext(WeatherContext);
 
@@ -25,20 +27,30 @@ function Search() {
         setLocation(e.target.value);
     }
 
-    function loadWeather() {
-        setErrorMessage()
-        API.getCurrentWeather(locationType, location, weatherContext.APIKey)
+    function getWeather(locationType, location, APIKey) {
+        API.getCurrentWeather(locationType, location, APIKey)
             .then(res => {
-                console.log(res);
-                createSearchHistory(`https://api.openweathermap.org/data/2.5/weather?${locationType}=${location}&appid=${weatherContext.APIKey}`);
                 document.getElementById('location').value = "";
                 setLocation("");
                 weatherContext.setWeatherData(res);
                 weatherContext.setIsLoaded(true);
+                API.getOneCallData(res.coord.lat, res.coord.lon, weatherContext.APIKey)
+                    .then(res => {
+                        console.log(res.daily)
+                        weatherContext.setUvi(res.current.uvi);
+                        weatherContext.setForecastWeatherData(res.daily);
+                    })
+                    .catch(err => console.log(err))
             })
             .catch(err => {
                 console.log(err)
             })
+    }
+
+    function loadWeather() {
+        setErrorMessage();
+        createSearchHistory(`https://api.openweathermap.org/data/2.5/weather?${locationType}=${location}&appid=${weatherContext.APIKey}`, document.getElementById('location').value, locationType);
+        getWeather(locationType, location, weatherContext.APIKey);
     }
 
     function setInitialLocalStorageArray() {
@@ -61,11 +73,11 @@ function Search() {
         }
     }
 
-    function createSearchHistory(APICallURL) {
+    function createSearchHistory(APICallURL, location, locationType) {
         document.getElementById('error').innerText = "";
         let searchArray = searchHistory;
-        searchArray.push({location: document.getElementById('location').value, APICall: APICallURL});
-        localStorage.setItem('currentCity', document.getElementById('location').value);
+        searchArray.push({location: location, locationType: locationType, APICall: APICallURL});
+        localStorage.setItem('currentCity', location);
         localStorage.setItem('search', JSON.stringify(searchArray));
         setLocalStorageLocationType();
         setSearchHistory(JSON.parse(localStorage.getItem('search')));
@@ -99,21 +111,22 @@ function Search() {
         setSearchHistory(JSON.parse(localStorage.getItem('search')));
     }
 
-    function searchHistoryAPICall(url) {
-        API.getCurrentWeatherWithURL(url)
-            .then(res => {
-                console.log(res);
-                weatherContext.setWeatherData(res);
-                weatherContext.setIsLoaded(true);
+    function getWeatherForMyLocation(e) {
+        e.preventDefault();
+        API.getMyIP()
+        .then(res => {
+            API.getZipbyLocation(res.ip)
+                .then (res => {
+                    createSearchHistory(`https://api.openweathermap.org/data/2.5/weather?q=${res.city}&appid=${weatherContext.APIKey}`, res.city, 'q');
+                    getWeather('q', res.city, weatherContext.APIKey);
             })
-            .catch(err => {
-                console.log(err)
-            })
+
+        })
     }
 
     return (
         <div className="searchArea shadow">
-            <h1>Search for a City:</h1>
+            {/* <h1>Search for a City:</h1> */}
             <form id="search-form">
                 <div className="form-check">
                     <input onClick={e => onLocationTypeChange(e)} className="form-check-input" type="radio" name="flexRadioDefault" id="zip" />
@@ -131,12 +144,15 @@ function Search() {
                     <input onChange={e => onLocationChange(e)} type="text" className="form-control" placeholder="Enter City Here" id="location"/>
                     <button onClick = {loadWeather} className="btn btn-primary" type="button">Search</button>
                 </div>
+                <div className="d-grid gap-2">
+                    <button onClick={getWeatherForMyLocation} className="btn btn-dark">Search My Location</button>
+                </div>
                 <p id="error"></p>
             </form>
             <br/>
             <ul className="list-group">
                 {searchHistory.map((location, index) => (
-                    <li onClick = {() => searchHistoryAPICall(location.APICall)} className="list-group-item d-flex justify-content-between align-items-center" id="searches" key={index}>
+                    <li onClick = {() => getWeather(location.locationType, location.location, weatherContext.APIKey)} className="list-group-item d-flex justify-content-between align-items-center" id="searches" key={index}>
                         {location.location}
                         <span onClick = {deleteSearchItem} className="badge bg-dark rounded-pill" id={index}>X</span>
                     </li>

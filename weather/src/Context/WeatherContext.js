@@ -4,6 +4,8 @@ export const WeatherContext = createContext();
 
 export default ({ children }) => {
   const [weatherData, setWeatherData] = useState([]);
+  const [forecastWeatherData, setForecastWeatherData] = useState([]);
+  const [uvi, setUvi] = useState('');
   const [currentCity, setCurrentCity] = useState('');
   const [currentLocationType, setCurrentLocationType] = useState('');
   const [isLoaded, setIsLoaded] = useState(false);
@@ -12,10 +14,13 @@ export default ({ children }) => {
 
   return (
     <div>
-    
         <WeatherContext.Provider value={{
             weatherData,
             setWeatherData,
+            uvi,
+            setUvi,
+            forecastWeatherData,
+            setForecastWeatherData,
             currentCity, 
             setCurrentCity,
             currentLocationType, 
