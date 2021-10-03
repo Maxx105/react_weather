@@ -63,7 +63,7 @@ function Weather() {
     return (
         <div>
             {weatherContext.isLoaded ? (
-                <div className = "weather-info shadow">
+                <div className = "weather-info">
                     <div>
                         <h1 id="city-name">{weatherContext.weatherData.name}, {weatherContext.weatherData.sys.country} ({getCurrentDate()})
                         <img id="icon" src={`https://openweathermap.org/img/wn/${weatherContext.weatherData.weather[0].icon}@2x.png`} alt = {weatherContext.weatherData.weather[0].description}></img>

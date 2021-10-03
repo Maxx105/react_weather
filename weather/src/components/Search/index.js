@@ -50,8 +50,6 @@ function Search() {
 
     function loadWeather() {
         setErrorMessage();
-        createSearchHistory(`https://api.openweathermap.org/data/2.5/weather?${locationType}=${location}&appid=${weatherContext.APIKey}`, document.getElementById('location').value, locationType);
-        getWeather(locationType, location, weatherContext.APIKey);
     }
 
     function setInitialLocalStorageArray() {
@@ -71,6 +69,8 @@ function Search() {
             createErrorMessage()
         } else {
             document.getElementById('error').innerText = "";
+            createSearchHistory(`https://api.openweathermap.org/data/2.5/weather?${locationType}=${location}&appid=${weatherContext.APIKey}`, document.getElementById('location').value, locationType);
+            getWeather(locationType, location, weatherContext.APIKey);
         }
     }
 
@@ -126,7 +126,7 @@ function Search() {
     }
 
     return (
-        <div className="searchArea shadow">
+        <div className="searchArea">
             {/* <h1>Search for a City:</h1> */}
             <form id="search-form">
                 <div className="form-check">
