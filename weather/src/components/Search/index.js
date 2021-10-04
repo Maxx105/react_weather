@@ -61,10 +61,10 @@ function Search() {
     }
 
     function setInitialLocalStorageArray() {
-        if (JSON.parse(localStorage.getItem('search')) === null) {
+        if (JSON.parse(localStorage.getItem('ms_react_weather_search')) === null) {
             setSearchHistory([]);
         } else {
-            setSearchHistory(JSON.parse(localStorage.getItem('search')));
+            setSearchHistory(JSON.parse(localStorage.getItem('ms_react_weather_search')));
         };
     }
 
@@ -73,9 +73,9 @@ function Search() {
         let searchArray = searchHistory;
         searchArray.push({location: location, locationType: locationType, APICall: APICallURL});
         localStorage.setItem('currentCity', location);
-        localStorage.setItem('search', JSON.stringify(searchArray));
+        localStorage.setItem('ms_react_weather_search', JSON.stringify(searchArray));
         setLocalStorageLocationType();
-        setSearchHistory(JSON.parse(localStorage.getItem('search')));
+        setSearchHistory(JSON.parse(localStorage.getItem('ms_react_weather_search')));
         weatherContext.setCurrentCity(localStorage.getItem('currentCity'));
         weatherContext.setCurrentLocationType(localStorage.getItem('currentLocationType'));
     }
@@ -102,8 +102,8 @@ function Search() {
     function deleteSearchItem(e) {
         let splicedArray = searchHistory;
         splicedArray.splice(e.target.id, 1);
-        localStorage.setItem('search', JSON.stringify(splicedArray));
-        setSearchHistory(JSON.parse(localStorage.getItem('search')));
+        localStorage.setItem('ms_react_weather_search', JSON.stringify(splicedArray));
+        setSearchHistory(JSON.parse(localStorage.getItem('ms_react_weather_search')));
     }
 
     function getWeatherForMyLocation(e) {
