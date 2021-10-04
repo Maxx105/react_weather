@@ -1,12 +1,14 @@
 import React, {useState, useEffect, useContext} from "react";
 import API from "../../utils/API";
 import { WeatherContext } from "../../Context/WeatherContext";
+import ErrorMessage from "../ErrorMessage";
 import "./style.css";
 
 function Search() {
     const [locationType, setLocationType] = useState("");
     const [location, setLocation] = useState("");
     const [searchHistory, setSearchHistory] = useState([]);
+    const [errMsg, setErrMsg] = useState('');
 
     const weatherContext = useContext(WeatherContext);
 
@@ -23,6 +25,8 @@ function Search() {
     }
 
     function getWeather(locationType, location, APIKey) {
+        setErrMsg("");
+        console.log(errMsg)
         API.getCurrentWeather(locationType, location, APIKey)
             .then(res => {
                 document.getElementById('location').value = "";
@@ -31,7 +35,6 @@ function Search() {
                 weatherContext.setIsLoaded(true);
                 API.getOneCallData(res.coord.lat, res.coord.lon, weatherContext.APIKey)
                     .then(res => {
-                        console.log(res)
                         weatherContext.setUvi(res.current.uvi);
                         weatherContext.setForecastDailyWeatherData(res.daily);
                         weatherContext.setForecastHourlyWeatherData(res.hourly);
@@ -39,20 +42,21 @@ function Search() {
                     .catch(err => console.log(err))
             })
             .catch(err => {
-                console.log(err)
+                if (err.response) {
+                    setErrMsg(` ${err.response.data.message}`)
+                    document.getElementById('location').value = "";
+                }
             })
     }
 
     function loadWeather() {
         if (document.getElementById('zip').checked === false && document.getElementById('q').checked === false) {
-            document.getElementById('error').innerText = " Please select a location type";
-            createErrorMessage()
+            setErrMsg(" Please select a location type");
         } else if (document.getElementById('location').value === "") {
-            document.getElementById('error').innerText = " Please enter a location";
-            createErrorMessage()
+            setErrMsg(" Please enter a location");
         } else {
-            document.getElementById('error').innerText = "";
-            createSearchHistory(`https://api.openweathermap.org/data/2.5/weather?${locationType}=${location}&appid=${weatherContext.APIKey}`, document.getElementById('location').value, locationType);
+            setErrMsg("");
+            createSearchHistory(`https://api.openweathermap.org/data/2.5/weather?${locationType}=${location}&appid=${weatherContext.APIKey}`, location, locationType);
             getWeather(locationType, location, weatherContext.APIKey);
         }
     }
@@ -109,6 +113,7 @@ function Search() {
         .then(res => {
             API.getZipbyLocation(res.ip)
                 .then (res => {
+                    setErrMsg("");
                     createSearchHistory(`https://api.openweathermap.org/data/2.5/weather?q=${res.city}&appid=${weatherContext.APIKey}`, res.city, 'q');
                     getWeather('q', res.city, weatherContext.APIKey);
             })
@@ -135,7 +140,16 @@ function Search() {
                     <input onChange={e => onLocationChange(e)} type="text" className="form-control" placeholder="Enter City Here" id="location"/>
                     <button onClick = {loadWeather} className="btn btn-primary" type="button">Search</button>
                 </div>
-                <p id="error"></p>
+                <ErrorMessage
+                    error = {errMsg}
+                    location = {location}
+                    locationType = {locationType}
+                    // createSearchHistory = {createSearchHistory(`https://api.openweathermap.org/data/2.5/weather?${locationType}=${location}&appid=${weatherContext.APIKey}`, location, locationType)}
+                    APIKey = {weatherContext.APIKey}
+                    createErrorMsg = {createErrorMessage}
+                    setErrMsg = {setErrMsg}
+                ></ErrorMessage>
+                {/* <p id="error"></p> */}
                 <div className="d-grid gap-2">
                     <button onClick={getWeatherForMyLocation} className="btn btn-dark">Search My Location</button>
                 </div>
