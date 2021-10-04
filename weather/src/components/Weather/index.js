@@ -93,7 +93,8 @@ function Weather() {
                                     <div><h5 className = "card-text"><strong>{convertDTtoDay(day.dt)}</strong></h5></div>
                                     <div><h6 className = "card-text">{convertDTtoDate(day.dt)}</h6></div>
                                     <div><img className="card-img-top" id="icon" src={`https://openweathermap.org/img/wn/${day.weather[0].icon}@2x.png`} alt = {day.weather[0].description}></img></div>
-                                    <div><p className = "card-text">Temperature: {convertToFahrenheit(day.temp.day)} °F</p></div>
+                                    <div><p className = "card-text">H: {convertToFahrenheit(day.temp.max)} °F</p></div>
+                                    <div><p className = "card-text">L: {convertToFahrenheit(day.temp.min)} °F</p></div>
                                     <div><p className = "card-text">Humidity: {day.humidity}%</p></div>
                                     <div><p className = "card-text">Chance of Precipitation: {(day.pop*100).toFixed(0)}%</p></div>
                                 </div>

@@ -31,6 +31,7 @@ function Search() {
                 weatherContext.setIsLoaded(true);
                 API.getOneCallData(res.coord.lat, res.coord.lon, weatherContext.APIKey)
                     .then(res => {
+                        console.log(res)
                         weatherContext.setUvi(res.current.uvi);
                         weatherContext.setForecastDailyWeatherData(res.daily);
                         weatherContext.setForecastHourlyWeatherData(res.hourly);
