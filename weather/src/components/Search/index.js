@@ -26,7 +26,6 @@ function Search() {
 
     function getWeather(locationType, location, APIKey) {
         setErrMsg("");
-        console.log(errMsg)
         API.getCurrentWeather(locationType, location, APIKey)
             .then(res => {
                 document.getElementById('location').value = "";
