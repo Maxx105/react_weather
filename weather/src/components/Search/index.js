@@ -38,12 +38,12 @@ function Search() {
                         weatherContext.setForecastDailyWeatherData(res.daily);
                         weatherContext.setForecastHourlyWeatherData(res.hourly);
                     })
-                    .catch(err => console.log(err))
             })
             .catch(err => {
                 if (err.response) {
                     setErrMsg(` ${err.response.data.message}`)
                     document.getElementById('location').value = "";
+                    console.clear();
                 }
             })
     }

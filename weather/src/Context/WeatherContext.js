@@ -10,7 +10,7 @@ export default ({ children }) => {
   const [currentCity, setCurrentCity] = useState('');
   const [currentLocationType, setCurrentLocationType] = useState('');
   const [isLoaded, setIsLoaded] = useState(false);
-
+  
   let APIKey = process.env.REACT_APP_APIKey;
 
   return (
